@@ -75,7 +75,7 @@ func (r *Runner) Receive(ctx context.Context, id string, tickets []Ticket, more 
 		return fmt.Errorf("%w: at most %d tickets at once", service.ErrInvalid, maxPushed)
 	}
 	for _, tk := range tickets {
-		if err := checkTicket(tk); err != nil {
+		if err := CheckTicket(tk); err != nil {
 			return fmt.Errorf("%w: %v", service.ErrInvalid, err)
 		}
 	}
@@ -90,9 +90,9 @@ func needPushable(in Integration) error {
 	return nil
 }
 
-// checkTicket refuses a ticket the pick list couldn't show: one without a key or title, or with a
+// CheckTicket refuses a ticket the pick list couldn't show: one without a key or title, or with a
 // link that isn't a web address, which would run as script when clicked.
-func checkTicket(tk Ticket) error {
+func CheckTicket(tk Ticket) error {
 	if strings.TrimSpace(tk.Key) == "" || strings.TrimSpace(tk.Title) == "" {
 		return errors.New("every ticket needs a key and a title")
 	}
