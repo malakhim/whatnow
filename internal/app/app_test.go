@@ -202,6 +202,22 @@ func TestOpenHostedLeavesOutReviewQueue(t *testing.T) {
 	}
 }
 
+func TestOpenOffersTheTicketFeedLocalAndHosted(t *testing.T) {
+	keyring.MockInit()
+	apps := map[string]*app.App{
+		"local":  open(t, filepath.Join(t.TempDir(), "l.db")),
+		"hosted": openHosted(t, filepath.Join(t.TempDir(), "h.db"), ""),
+	}
+	for mode, a := range apps {
+		v, err := a.Integrations.View(context.Background(), "ticketfeed")
+		if err != nil {
+			t.Errorf("%s app: %v", mode, err)
+		} else if v.Pushable {
+			t.Errorf("%s app's ticketfeed is pushable", mode)
+		}
+	}
+}
+
 func TestOpenHostedSealsKeys(t *testing.T) {
 	a := openHosted(t, filepath.Join(t.TempDir(), "u.db"), "")
 	ctx := context.Background()

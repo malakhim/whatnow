@@ -27,9 +27,12 @@ For a feel of a whole day, from the morning brain dump to the wrap-up, read [dem
 - **Wrap up:** see what you got done, triage what's left, and leave a note for tomorrow.
 - **Integrations:** pull today's meetings from Google Calendar (by each calendar's secret iCal
   address, no OAuth), and pick tasks from Jira tickets (by your own JQL search), from Linear issues
-  (your active ones, or a view's), and from the PRs a running
+  (your active ones, or a view's), from the PRs a running
   [Review Queue](https://github.com/oreillymedia-ai-transformation/review-queue) ranks for your
-  review. Pulls happen only when you ask, from the morning brain dump or from settings. When hosted
+  review, and from a Ticket feed: any program that answers a `GET` with
+  [whatnow's ticket JSON](docs/superpowers/specs/2026-11-09-whatnow-ticket-feed-design.md#the-contract).
+  Save the feed's *Address*, and a *Token* if it needs one, which whatnow sends as a Bearer token.
+  Pulls happen only when you ask, from the morning brain dump or from settings. When hosted
   whatnow can't reach your Jira, because it's behind a VPN or on an intranet, set Jira to *From my
   computer* and run `whatnow jira setup` once on a Mac that can reach it (install with
   `brew install jameynakama/tap/whatnow`). After that, `whatnow jira push` sends your search and the
@@ -122,7 +125,7 @@ stay in sync. In the terminal, press `?` for the keys.
 ### The terminal UI
 
 The TUI is a companion meant to sit in a spare pane all day, not a full replacement. It does the
-morning ritual (including calendar, Jira, Linear, and Review Queue pulls), today's list, *what now?*, pace, undo, quick
+morning ritual (including calendar, Jira, Linear, Review Queue, and Ticket feed pulls), today's list, *what now?*, pace, undo, quick
 add, and chat. These are web-only:
 
 - first-run setup and all settings, including integrations and themes

@@ -17,6 +17,7 @@ import (
 	"github.com/jameynakama/whatnow/internal/integrations/jira"
 	"github.com/jameynakama/whatnow/internal/integrations/linear"
 	"github.com/jameynakama/whatnow/internal/integrations/reviewqueue"
+	"github.com/jameynakama/whatnow/internal/integrations/ticketfeed"
 	"github.com/jameynakama/whatnow/internal/llm"
 	"github.com/jameynakama/whatnow/internal/outbound"
 	"github.com/jameynakama/whatnow/internal/planner"
@@ -89,7 +90,7 @@ func Open(o Options) (*App, error) {
 
 	clients := settings.Clients{Keys: settings.LocalKeys()}
 	var vault secrets.Store = secrets.Keychain{}
-	pulls := []integrations.Integration{gcal.New(nil), jira.New(nil), linear.NewAt(nil, o.LinearURL), reviewqueue.New(nil)}
+	pulls := []integrations.Integration{gcal.New(nil), jira.New(nil), linear.NewAt(nil, o.LinearURL), reviewqueue.New(nil), ticketfeed.New(nil)}
 	loc := o.Loc
 	if o.Hosted != nil {
 		sealed := secrets.NewSealed(db, o.Hosted.SealKey)
@@ -97,7 +98,7 @@ func Open(o Options) (*App, error) {
 		// A streamed chat reply can outlast any overall timeout, so the model clients get none.
 		clients = settings.Clients{Keys: settings.SealedKeys(sealed), HTTP: outbound.Client(0)}
 		guarded := outbound.Client(30 * time.Second)
-		pulls = []integrations.Integration{gcal.New(guarded), jira.New(guarded), linear.NewAt(guarded, o.LinearURL)}
+		pulls = []integrations.Integration{gcal.New(guarded), jira.New(guarded), linear.NewAt(guarded, o.LinearURL), ticketfeed.New(guarded)}
 		loc = SavedLoc(context.Background(), db)
 	}
 	svc := service.New(db, o.Now)
